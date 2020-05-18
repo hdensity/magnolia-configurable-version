@@ -1,0 +1,24 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+    <name>configurable-version</name>
+    <displayName>${project.name}</displayName>
+    <description>${project.description}</description>
+    <versionHandler>info.magnolia.module.DefaultModuleVersionHandler</versionHandler>
+    <version>${project.version}</version>
+
+    <components>
+        <id>system</id>
+        <component>
+            <type>info.magnolia.cms.beans.config.VersionConfig</type>
+            <implementation>it.schm.magnolia.version.beans.ConfigurableVersionConfig</implementation>
+        </component>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>6.2/*</version>
+        </dependency>
+    </dependencies>
+
+</module>

@@ -26,13 +26,15 @@ package it.schm.magnolia.version.beans;
 
 import info.magnolia.cms.beans.config.VersionConfig;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockRepositoryAcquiringStrategy;
+import info.magnolia.test.mock.jcr.MockEventListenerIterator;
+import info.magnolia.test.mock.jcr.MockWorkspace;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,10 +43,24 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.observation.EventListener;
+import javax.jcr.observation.ObservationManager;
 
+import static info.magnolia.repository.RepositoryConstants.CONFIG;
 import static info.magnolia.test.TestUtil.delayedAssert;
+import static it.schm.magnolia.version.beans.ConfigurableVersionConfig.CONFIG_PATH;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ConfigurableVersionConfigTest extends RepositoryTestCase {
@@ -59,10 +75,9 @@ class ConfigurableVersionConfigTest extends RepositoryTestCase {
         super.setUp();
 
         ComponentsTestUtil.setInstance(VersionConfig.class, configurableVersionConfig);
-        ComponentsTestUtil.setInstance(SystemContext.class, MgnlContext.getSystemContext());
 
-        Session session = MgnlContext.getSystemContext().getJCRSession(RepositoryConstants.CONFIG);
-        configNode = NodeUtil.createPath(session.getRootNode(), ConfigurableVersionConfig.CONFIG_PATH, NodeTypes.ContentNode.NAME);
+        Session session = MgnlContext.getSystemContext().getJCRSession(CONFIG);
+        configNode = NodeUtil.createPath(session.getRootNode(), CONFIG_PATH, NodeTypes.ContentNode.NAME);
         session.save();
     }
 
@@ -85,6 +100,46 @@ class ConfigurableVersionConfigTest extends RepositoryTestCase {
         delayedAssert(() -> {
             assertThat(configurableVersionConfig.isActive()).isFalse();
             assertThat(configurableVersionConfig.getMaxVersionAllowed()).isEqualTo(42L);
+        });
+    }
+
+    @Test
+    void given_exception_when_init_then_exceptionIsCaught() throws Exception {
+        Session sessionMock = mock(Session.class);
+        when(sessionMock.getWorkspace()).thenReturn(new MockWorkspace(CONFIG));
+
+        MockRepositoryAcquiringStrategy strategy = new MockRepositoryAcquiringStrategy();
+        ((MockContext)MgnlContext.getSystemContext()).setRepositoryStrategy(strategy);
+        strategy.addSession(CONFIG, sessionMock);
+
+        ObservationManager observationManagerMock = mock(ObservationManager.class);
+        ((MockWorkspace) MgnlContext.getSystemContext().getJCRSession(CONFIG).getWorkspace())
+                .setObservationManager(observationManagerMock);
+
+        when(observationManagerMock.getRegisteredEventListeners())
+                .thenReturn(new MockEventListenerIterator(emptyList()));
+        doThrow(new RepositoryException()).when(observationManagerMock)
+                .addEventListener(
+                        any(EventListener.class),
+                        anyInt(),
+                        anyString(),
+                        anyBoolean(),
+                        eq(null),
+                        eq(null),
+                        anyBoolean());
+
+        configurableVersionConfig.init();
+
+        assertThat(configurableVersionConfig.isActive()).isTrue();
+        assertThat(configurableVersionConfig.getMaxVersionAllowed()).isEqualTo(3L);
+
+        PropertyUtil.setProperty(configNode, ConfigurableVersionConfig.ACTIVE, false);
+        PropertyUtil.setProperty(configNode, ConfigurableVersionConfig.MAX_VERSION_INDEX, 42L);
+        configNode.getSession().save();
+
+        delayedAssert(3000, 10000, () -> {
+            assertThat(configurableVersionConfig.isActive()).isTrue();
+            assertThat(configurableVersionConfig.getMaxVersionAllowed()).isEqualTo(3L);
         });
     }
 

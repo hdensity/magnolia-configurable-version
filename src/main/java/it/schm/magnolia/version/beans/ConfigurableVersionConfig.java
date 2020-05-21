@@ -41,7 +41,10 @@ import static info.magnolia.jcr.util.SessionUtil.getNode;
 import static info.magnolia.observation.WorkspaceEventListenerRegistration.observe;
 
 /**
- * {@inheritDoc}
+ * Configurable versioning configuration class, which allows you to define if versions are created
+ * and how many version are kept.
+ *
+ * By default, this implementation recreates the defaults of the base {@link VersionConfig}.
  */
 @Slf4j
 @Singleton

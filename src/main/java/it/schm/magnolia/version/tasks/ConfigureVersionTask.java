@@ -41,40 +41,47 @@ import static info.magnolia.repository.RepositoryConstants.CONFIG;
 import static it.schm.magnolia.version.beans.ConfigurableVersionConfig.CONFIG_PATH;
 
 /**
- * This class is a task you can use to configure versioning during bootstrapping in your module version handler.
+ * This class is a task you can use to configure versioning during installation in your module version handler.
  *
  * @see info.magnolia.module.DefaultModuleVersionHandler
  */
 @Log4j2
 public class ConfigureVersionTask extends AbstractTask {
 
-    private final boolean enabled;
+    private final boolean active;
     private final long maxVersions;
 
     /**
      * Creates a new instance of this task.
      *
-     * @param enabled     Whether to enable or disable versioning
+     * @param active      Whether to enable or disable versioning
      * @param maxVersions The number of versions to keep, must be bigger than 0
      */
-    public ConfigureVersionTask(boolean enabled, long maxVersions) {
+    public ConfigureVersionTask(boolean active, long maxVersions) {
         super(
                 "Configure versioning",
                 String.format("Configure versioning to be %s and keep %d versions",
-                        enabled ? "enabled" : "disabled", maxVersions));
+                        active ? "enabled" : "disabled", maxVersions));
 
         checkArgument(maxVersions > 0, "maxVersions must be bigger than 0");
 
-        this.enabled = enabled;
+        this.active = active;
         this.maxVersions = maxVersions;
     }
 
+    /**
+     * Executing this task, creates the required config node, if it doesn't exist, and sets the required properties
+     * to the provided values.
+     *
+     * @param installContext The install context to use when executing sub-tasks
+     * @throws TaskExecutionException thrown if a task throws an exception
+     */
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         Task task = new ArrayDelegateTask("",
                 new NodeExistsDelegateTask(
                         "", CONFIG_PATH, null, new CreateNodePathTask("", "", CONFIG, CONFIG_PATH)),
-                new SetPropertyTask("", CONFIG, CONFIG_PATH, ACTIVE, enabled),
+                new SetPropertyTask("", CONFIG, CONFIG_PATH, ACTIVE, active),
                 new SetPropertyTask("", CONFIG, CONFIG_PATH, MAX_VERSION_INDEX, maxVersions));
 
         task.execute(installContext);

@@ -70,6 +70,7 @@ Line 6 shows the task in use, which in this case (```true```) enables versioning
 Alternatively you can also [bootstrap](https://documentation.magnolia-cms.com/display/DOCS62/Importing+and+exporting+JCR+data+for+bootstrapping?src=contextnavpagetreemode) the configuration. Add a file named ```config.server.version.xml``` or ```config.server.version.yaml``` in your bootstrap folder and add the following content, replacing ```?active?``` and ```?maxVersions?``` with your required values:
 
 #### [XML](https://documentation.magnolia-cms.com/display/DOCS62/Bootstrapping+in+Maven+modules?src=contextnavpagetreemode)
+
 ```XML
 <?xml version="1.0" encoding="UTF-8"?>
 <sv:node xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sv:name="version">
@@ -89,6 +90,7 @@ Alternatively you can also [bootstrap](https://documentation.magnolia-cms.com/di
 ```
 
 #### [YAML](https://documentation.magnolia-cms.com/display/DOCS62/Bootstrapping+in+light+modules?src=contextnavpagetreemode)
+
 ```YAML
 'version':
   'active': ?active?
@@ -105,4 +107,4 @@ Please note, we recommend the former two approaches, as they allow you to put yo
 
 This project is licensed under the MIT License; see the [LICENSE](https://github.com/hdensity/magnolia-configurable-version/blob/master/LICENSE) file for details.
 
-Copyright 2020 &copy; Sam Schmit-Van Werweke 
+Copyright 2020 &copy; Sam Schmit-Van Werweke

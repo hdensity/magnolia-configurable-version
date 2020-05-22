@@ -44,7 +44,7 @@ import static info.magnolia.observation.WorkspaceEventListenerRegistration.obser
  * Configurable versioning configuration class, which allows you to define if versions are created
  * and how many version are kept.
  *
- * By default, this implementation recreates the defaults of the base {@link VersionConfig}.
+ * <p>By default, this implementation recreates the defaults of the base {@link VersionConfig}.</p>
  */
 @Slf4j
 @Singleton

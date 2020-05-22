@@ -3,9 +3,9 @@
 [![GitHub](https://img.shields.io/github/license/hdensity/magnolia-configurable-version)](https://github.com/hdensity/magnolia-configurable-version/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/hdensity/magnolia-configurable-version.svg?branch=master)](https://travis-ci.com/hdensity/magnolia-configurable-version)
 [![Coverage Status](https://coveralls.io/repos/github/hdensity/magnolia-configurable-version/badge.svg?branch=master)](https://coveralls.io/github/hdensity/magnolia-configurable-version?branch=master)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/hdensity/magnolia-configurable-version)](https://codeclimate.com/github/hdensity/magnolia-configurable-version)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/hdensity/magnolia-configurable-version)](https://codeclimate.com/github/hdensity/magnolia-configurable-version/issues)
-![Maven Central](https://img.shields.io/maven-central/v/it.schm.magnolia/magnolia-configurable-version)
+[![Maven Central](https://img.shields.io/maven-central/v/it.schm.magnolia/magnolia-configurable-version)](https://search.maven.org/artifact/it.schm.magnolia/magnolia-configurable-version)
 [![Active](http://img.shields.io/badge/Status-Active-green.svg)](https://github.com/hdensity/magnolia-configurable-version)
 
 [Magnolia versions](https://documentation.magnolia-cms.com/display/DOCS62/Versioning) pages, assets and contacts by default when they are published and unpublished. You can also configure versioning for any [other content type](https://documentation.magnolia-cms.com/display/DOCS62/Enabling+versioning+in+content+apps). The Community Edition of Magnolia CMS, by default, [limits the number](https://documentation.magnolia-cms.com/display/DOCS62/Enabling+versioning+in+content+apps#Enablingversioningincontentapps-Numberofversions) of versions kept to 3 and does not allow you to change it. With this module, that number becomes easily configurable.

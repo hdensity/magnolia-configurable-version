@@ -76,7 +76,7 @@
         <version.mockito>3.3.3</version.mockito>
         <version.assertj>3.16.0</version.assertj>
         <version.equalsverifier>3.1.13</version.equalsverifier>
-        <version.tomcat.embed>9.0.35</version.tomcat.embed>
+        <version.tomcat.embed>9.0.41</version.tomcat.embed>
 
         <version.jacoco>0.8.5</version.jacoco>
 
